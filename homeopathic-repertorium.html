@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homeopathic Repertorium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .search-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #searchInput:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 5px rgba(118, 75, 162, 0.3);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-size: 1.8em;
+        }
+
+        .remedy-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .remedy-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .remedy-card h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        .remedy-card .latin-name {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .remedy-card .symptoms {
+            margin-top: 10px;
+        }
+
+        .remedy-card .symptoms h4 {
+            color: #667eea;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        .symptom-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .symptom-list li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .symptom-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 30px;
+            color: #856404;
+        }
+
+        .disclaimer strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Homeopathic Repertorium</h1>
+            <p>A Comprehensive Reference Guide for Homeopathic Remedies</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for symptoms, remedies, or conditions...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="mind">Mind</button>
+                <button class="filter-btn" data-category="head">Head</button>
+                <button class="filter-btn" data-category="respiratory">Respiratory</button>
+                <button class="filter-btn" data-category="digestive">Digestive</button>
+                <button class="filter-btn" data-category="skin">Skin</button>
+                <button class="filter-btn" data-category="injuries">Injuries</button>
+                <button class="filter-btn" data-category="fever">Fever</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="disclaimer">
+                <strong>⚠️ Medical Disclaimer:</strong>
+                This repertorium is for educational purposes only. Always consult with a qualified healthcare practitioner before starting any treatment. Homeopathic remedies should be prescribed by trained professionals.
+            </div>
+
+            <!-- MIND SECTION -->
+            <div class="section" data-category="mind">
+                <h2>Mind & Emotional Symptoms</h2>
+                
+                <div class="remedy-card">
+                    <h3>Aconitum Napellus</h3>
+                    <div class="latin-name">Aconitum napellus (Monkshood)</div>
+                    <p><strong>Key Indication:</strong> Sudden acute conditions, panic attacks, fear</p>
+                    <div class="symptoms">
+                        <h4>Mental Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Great fear and anxiety, fear of death</li>
+                            <li>Restlessness and agitation</li>
+                            <li>Panic attacks with palpitations</li>
+                            <li>Anxiety after shock or fright</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Ignatia Amara</h3>
+                    <div class="latin-name">Ignatia amara (St. Ignatius Bean)</div>
+                    <p><strong>Key Indication:</strong> Grief, emotional upset, hysteria</p>
+                    <div class="symptoms">
+                        <h4>Mental Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Acute grief and disappointment</li>
+                            <li>Mood swings, sighing</li>
+                            <li>Suppressed emotions</li>
+                            <li>Lump in throat sensation</li>
+                            <li>Effects of loss or bereavement</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Arsenicum Album</h3>
+                    <div class="latin-name">Arsenicum album (White Arsenic)</div>
+                    <p><strong>Key Indication:</strong> Anxiety, restlessness, perfectionism</p>
+                    <div class="symptoms">
+                        <h4>Mental Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Anxiety about health and security</li>
+                            <li>Restlessness, especially at night</li>
+                            <li>Fastidious and perfectionist</li>
+                            <li>Fear of being alone</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HEAD SECTION -->
+            <div class="section" data-category="head">
+                <h2>Head & Headache</h2>
+                
+                <div class="remedy-card">
+                    <h3>Belladonna</h3>
+                    <div class="latin-name">Atropa belladonna (Deadly Nightshade)</div>
+                    <p><strong>Key Indication:</strong> Sudden, violent onset; throbbing headaches</p>
+                    <div class="symptoms">
+                        <h4>Head Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Throbbing, pulsating headache</li>
+                            <li>Hot, red face with cold extremities</li>
+                            <li>Sudden onset of symptoms</li>
+                            <li>Worse from light, noise, jarring</li>
+                            <li>Better from pressure and sitting up</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Gelsemium</h3>
+                    <div class="latin-name">Gelsemium sempervirens (Yellow Jasmine)</div>
+                    <p><strong>Key Indication:</strong> Dull headache, heaviness, drowsiness</p>
+                    <div class="symptoms">
+                        <h4>Head Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Dull, heavy headache at back of head</li>
+                            <li>Droopy eyelids, drowsiness</li>
+                            <li>Headache better after urination</li>
+                            <li>Anticipatory anxiety</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Natrum Muriaticum</h3>
+                    <div class="latin-name">Natrum muriaticum (Sodium Chloride)</div>
+                    <p><strong>Key Indication:</strong> Hammering headaches, sun headache</p>
+                    <div class="symptoms">
+                        <h4>Head Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Bursting, hammering headache</li>
+                            <li>Headache from sunrise to sunset</li>
+                            <li>Worse from sun exposure</li>
+                            <li>Associated with eye strain</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESPIRATORY SECTION -->
+            <div class="section" data-category="respiratory">
+                <h2>Respiratory System</h2>
+                
+                <div class="remedy-card">
+                    <h3>Bryonia Alba</h3>
+                    <div class="latin-name">Bryonia alba (White Bryony)</div>
+                    <p><strong>Key Indication:</strong> Dry cough, chest pain, worse from motion</p>
+                    <div class="symptoms">
+                        <h4>Respiratory Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Dry, painful cough</li>
+                            <li>Chest pain worse from motion</li>
+                            <li>Must hold chest when coughing</li>
+                            <li>Great thirst for large quantities</li>
+                            <li>Worse from any movement</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Phosphorus</h3>
+                    <div class="latin-name">Phosphorus</div>
+                    <p><strong>Key Indication:</strong> Chest complaints, hoarseness, bronchitis</p>
+                    <div class="symptoms">
+                        <h4>Respiratory Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Hoarseness, losing voice</li>
+                            <li>Hard, dry, tight cough</li>
+                            <li>Chest tightness and oppression</li>
+                            <li>Better from cold drinks (but vomited when warm)</li>
+                            <li>Bleeding tendency</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Antimonium Tartaricum</h3>
+                    <div class="latin-name">Antimonium tartaricum (Tartar Emetic)</div>
+                    <p><strong>Key Indication:</strong> Rattling cough, difficulty expectorating</p>
+                    <div class="symptoms">
+                        <h4>Respiratory Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Loose, rattling cough</li>
+                            <li>Difficulty raising mucus</li>
+                            <li>Drowsiness with respiratory symptoms</li>
+                            <li>Better from expectoration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIGESTIVE SECTION -->
+            <div class="section" data-category="digestive">
+                <h2>Digestive System</h2>
+                
+                <div class="remedy-card">
+                    <h3>Nux Vomica</h3>
+                    <div class="latin-name">Strychnos nux-vomica (Poison Nut)</div>
+                    <p><strong>Key Indication:</strong> Digestive complaints from overindulgence</p>
+                    <div class="symptoms">
+                        <h4>Digestive Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Nausea and vomiting after eating</li>
+                            <li>Constipation with ineffectual urging</li>
+                            <li>Heartburn and indigestion</li>
+                            <li>Worse from coffee, alcohol, spices</li>
+                            <li>Irritable and oversensitive</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Carbo Vegetabilis</h3>
+                    <div class="latin-name">Carbo vegetabilis (Vegetable Charcoal)</div>
+                    <p><strong>Key Indication:</strong> Gas, bloating, flatulence</p>
+                    <div class="symptoms">
+                        <h4>Digestive Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Excessive flatulence and bloating</li>
+                            <li>Slow digestion</li>
+                            <li>Desire for fresh air</li>
+                            <li>Better from belching</li>
+                            <li>Weakness and exhaustion</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Pulsatilla</h3>
+                    <div class="latin-name">Pulsatilla nigricans (Wind Flower)</div>
+                    <p><strong>Key Indication:</strong> Digestive upset from fatty foods</p>
+                    <div class="symptoms">
+                        <h4>Digestive Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Aversion to fat and rich food</li>
+                            <li>Changeable symptoms</li>
+                            <li>Desire for fresh, open air</li>
+                            <li>Thirstless with complaints</li>
+                            <li>Gentle, weepy disposition</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKIN SECTION -->
+            <div class="section" data-category="skin">
+                <h2>Skin Conditions</h2>
+                
+                <div class="remedy-card">
+                    <h3>Sulphur</h3>
+                    <div class="latin-name">Sulphur</div>
+                    <p><strong>Key Indication:</strong> Itchy skin conditions, burning sensations</p>
+                    <div class="symptoms">
+                        <h4>Skin Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Intense itching, worse from warmth</li>
+                            <li>Burning sensations</li>
+                            <li>Dirty, unhealthy looking skin</li>
+                            <li>Worse from bathing</li>
+                            <li>Hot feet, throws covers off at night</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Graphites</h3>
+                    <div class="latin-name">Graphites</div>
+                    <p><strong>Key Indication:</strong> Thick, honey-like discharge, skin cracks</p>
+                    <div class="symptoms">
+                        <h4>Skin Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Eruptions with thick, sticky discharge</li>
+                            <li>Cracks and fissures in skin</li>
+                            <li>Worse behind ears, in folds</li>
+                            <li>Keloid formations</li>
+                            <li>Chilly patient</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Rhus Toxicodendron</h3>
+                    <div class="latin-name">Rhus toxicodendron (Poison Ivy)</div>
+                    <p><strong>Key Indication:</strong> Itchy blisters, worse at rest</p>
+                    <div class="symptoms">
+                        <h4>Skin Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Intense itching with red, swollen skin</li>
+                            <li>Small blisters or vesicles</li>
+                            <li>Better from warmth and motion</li>
+                            <li>Worse from cold and rest</li>
+                            <li>Restlessness</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Apis Mellifica</h3>
+                    <div class="latin-name">Apis mellifica (Honey Bee)</div>
+                    <p><strong>Key Indication:</strong> Stinging, burning pains, swelling</p>
+                    <div class="symptoms">
+                        <h4>Skin Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Swelling with stinging, burning pains</li>
+                            <li>Rosy red or pale edematous swelling</li>
+                            <li>Better from cold applications</li>
+                            <li>Worse from heat and warm room</li>
+                            <li>Thirstless with complaints</li>
+                            <li>Allergic reactions, hives, insect bites</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INJURIES & TRAUMA SECTION -->
+            <div class="section" data-category="injuries">
+                <h2>Injuries & Trauma</h2>
+                
+                <div class="remedy-card">
+                    <h3>Arnica Montana</h3>
+                    <div class="latin-name">Arnica montana (Leopard's Bane)</div>
+                    <p><strong>Key Indication:</strong> Trauma, bruising, muscle soreness</p>
+                    <div class="symptoms">
+                        <h4>Injury Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>First remedy for any injury or trauma</li>
+                            <li>Bruising and soreness</li>
+                            <li>Bed feels too hard</li>
+                            <li>Says "I'm fine" even when injured</li>
+                            <li>Prevents shock after accidents</li>
+                            <li>Post-surgical healing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FEVER SECTION -->
+            <div class="section" data-category="fever">
+                <h2>Fever & Infections</h2>
+                
+                <div class="remedy-card">
+                    <h3>Ferrum Phosphoricum</h3>
+                    <div class="latin-name">Ferrum phosphoricum (Iron Phosphate)</div>
+                    <p><strong>Key Indication:</strong> First stage of inflammation, low fever</p>
+                    <div class="symptoms">
+                        <h4>Fever Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Low to moderate fever</li>
+                            <li>First stage of any inflammation</li>
+                            <li>Face alternately pale and flushed</li>
+                            <li>No clear picture of symptoms</li>
+                            <li>Better from cold applications</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Pyrogenium</h3>
+                    <div class="latin-name">Pyrogenium</div>
+                    <p><strong>Key Indication:</strong> Septic conditions, offensive discharges</p>
+                    <div class="symptoms">
+                        <h4>Fever Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>High fever with relatively slow pulse</li>
+                            <li>All discharges are offensive</li>
+                            <li>Restlessness despite exhaustion</li>
+                            <li>Bed feels too hard</li>
+                            <li>Septic states</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Oscillococcinum</h3>
+                    <div class="latin-name">Anas barbariae hepatis et cordis extractum</div>
+                    <p><strong>Key Indication:</strong> Flu-like symptoms</p>
+                    <div class="symptoms">
+                        <h4>Fever Symptoms:</h4>
+                        <ul class="symptom-list">
+                            <li>Fever with chills</li>
+                            <li>Body aches</li>
+                            <li>Fatigue</li>
+                            <li>Best when taken at first sign of flu</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK REFERENCE -->
+            <div class="section" data-category="all">
+                <h2>Quick Reference Guide</h2>
+                
+                <div class="remedy-card">
+                    <h3>Common Modalities</h3>
+                    <div class="symptoms">
+                        <h4>Time Modalities:</h4>
+                        <ul class="symptom-list">
+                            <li><strong>3 AM:</strong> Arsenicum Album (restlessness, anxiety)</li>
+                            <li><strong>Morning:</strong> Nux Vomica (digestive complaints)</li>
+                            <li><strong>Evening:</strong> Pulsatilla (emotional symptoms)</li>
+                            <li><strong>Night:</strong> Mercurius (sweating, worse at night)</li>
+                        </ul>
+                        
+                        <h4>Temperature Modalities:</h4>
+                        <ul class="symptom-list">
+                            <li><strong>Better from Cold:</strong> Apis, Pulsatilla, Sulphur</li>
+                            <li><strong>Better from Heat:</strong> Arsenicum, Rhus Tox, Nux Vomica</li>
+                            <li><strong>Worse from Cold:</strong> Rhus Tox, Dulcamara</li>
+                            <li><strong>Worse from Heat:</strong> Pulsatilla, Apis</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="remedy-card">
+                    <h3>Acute Care Remedies</h3>
+                    <p>Top remedies for home first aid kit:</p>
+                    <ul class="symptom-list">
+                        <li><strong>Aconitum:</strong> Sudden onset, panic, shock</li>
+                        <li><strong>Arnica:</strong> Trauma, bruising, muscle soreness</li>
+                        <li><strong>Belladonna:</strong> High fever, throbbing pain</li>
+                        <li><strong>Gelsemium:</strong> Flu with weakness and drowsiness</li>
+                        <li><strong>Nux Vomica:</strong> Overindulgence, digestive upset</li>
+                        <li><strong>Pulsatilla:</strong> Colds, gentle emotional nature</li>
+                        <li><strong>Rhus Tox:</strong> Sprains, strains, stiffness</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Homeopathic Repertorium | For Educational Purposes Only</p>
+            <p>Always consult with a qualified homeopathic practitioner or healthcare provider</p>
+        </footer>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const remedyCards = document.querySelectorAll('.remedy-card');
+        const sections = document.querySelectorAll('.section');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            remedyCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Show/hide sections based on visible cards
+            sections.forEach(section => {
+                const visibleCards = section.querySelectorAll('.remedy-card:not(.hidden)');
+                if (visibleCards.length === 0 && searchTerm !== '') {
+                    section.classList.add('hidden');
+                } else {
+                    section.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Filter functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Clear search
+                searchInput.value = '';
+                
+                // Show/hide sections based on category
+                sections.forEach(section => {
+                    const sectionCategory = section.dataset.category;
+                    if (category === 'all' || sectionCategory === category) {
+                        section.classList.remove('hidden');
+                        // Show all cards in visible sections
+                        section.querySelectorAll('.remedy-card').forEach(card => {
+                            card.classList.remove('hidden');
+                        });
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
