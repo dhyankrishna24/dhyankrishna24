@@ -12,7 +12,7 @@ I've created a comprehensive **[Homeopathic Repertorium](homeopathic-repertorium
 
 ### Features:
 - 🔍 Searchable database of common homeopathic remedies
-- 📋 Organized by body systems (Mind, Head, Respiratory, Digestive, Skin, Fever)
+- 📋 Organized by body systems (Mind, Head, Respiratory, Digestive, Skin, Injuries, Fever)
 - 💊 Detailed remedy information including Latin names and key indications
 - 📱 Responsive design for mobile and desktop
 - 🎯 Quick reference guide for acute care
